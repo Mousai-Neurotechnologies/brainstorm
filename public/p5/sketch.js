@@ -27,7 +27,7 @@ function setup() {
   other_yvalues = new Array(yvalues.length);
   other_basetime = new Array(yvalues.length);
 
-  socket = io.connect('http://' + url);
+  socket = io.connect('https://' + url);
   socket.on('bci', passSignal);
 
   button = createButton('Generate Signal');
