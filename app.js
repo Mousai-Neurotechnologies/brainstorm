@@ -1,8 +1,9 @@
 var express = require('express')
 var app = express();
+var fs = require('fs')
 var debug = require('debug')('myexpressapp:server');
-var https = require('https').createServer(app);
-var io = require('socket.io')(https);
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
 var bci = require('bcijs');
 
 var port = normalizePort(process.env.PORT || '80');
@@ -27,12 +28,12 @@ io.on('connection', (socket) => {
 
 app.set('port', port);
 
-https.listen(parseInt(port), () => {
+server.listen(parseInt(port), () => {
   console.log('listening on *:' + port);
 });
 
-https.on('error', onError);
-https.on('listening', onListening);
+server.on('error', onError);
+server.on('listening', onListening);
 
 console.log('My socket server is running')
 
@@ -90,7 +91,7 @@ function onError(error) {
  */
 
 function onListening() {
-  var addr = https.address();
+  var addr = server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
