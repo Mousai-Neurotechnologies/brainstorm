@@ -1,4 +1,4 @@
-let url = 'https://mousai.azurewebsites.net/' //'localhost'//
+let url = 'mousai.azurewebsites.net/' //'localhost'//
 
 let ellipse_size = 3;
 let xspacing = ellipse_size; // Distance between each horizontal location
@@ -27,7 +27,7 @@ function setup() {
   other_yvalues = new Array(yvalues.length);
   other_basetime = new Array(yvalues.length);
 
-  socket = io.connect('http://' + url);
+  socket = io.connect('https://' + url);
   socket.on('bci', passSignal);
 
   button = createButton('Generate Signal');
