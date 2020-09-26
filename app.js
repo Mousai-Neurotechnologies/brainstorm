@@ -4,6 +4,7 @@ var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 var bci = require('bcijs');
 
+var port = '80' //'3000'
 
 
 app.use(express.static('public/p5'))
@@ -23,8 +24,8 @@ io.on('connection', (socket) => {
   //   });
   });
 
-http.listen(3000, () => {
-  console.log('listening on *:3000');
+http.listen(parseInt(port), () => {
+  console.log('listening on *:' + port);
 });
 
 console.log('My socket server is running')

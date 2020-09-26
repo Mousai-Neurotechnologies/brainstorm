@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node server.ts"
+    "start": "node app.js"
   },
   "dependencies": {
     "bcijs": "^1.8.0",

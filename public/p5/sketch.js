@@ -1,4 +1,5 @@
 let ip = '13.89.172.22'
+var port = '80' //'3000'
 
 let ellipse_size = 3;
 let xspacing = ellipse_size; // Distance between each horizontal location
@@ -27,7 +28,7 @@ function setup() {
   other_yvalues = new Array(yvalues.length);
   other_basetime = new Array(yvalues.length);
 
-  socket = io.connect('http://' + ip + ':3000');
+  socket = io.connect('http://' + ip + ':' + port);
   socket.on('bci', passSignal);
 
   button = createButton('Generate Signal');
