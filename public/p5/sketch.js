@@ -1,4 +1,4 @@
-let url = 'mousai.azurewebsites.net/' //'localhost'//
+let url = 'https://mousai.azurewebsites.net/' //'http://localhost'//
 
 let ellipse_size = 3;
 let xspacing = ellipse_size; // Distance between each horizontal location
@@ -19,7 +19,7 @@ let start_time = Date.now();
 let first_sig = true;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas((3/4)*windowWidth, windowHeight);
   w = width + ellipse_size;
   dx = (TWO_PI / period) * xspacing;
   yvalues = new Array(floor(w / xspacing));
@@ -27,7 +27,7 @@ function setup() {
   other_yvalues = new Array(yvalues.length);
   other_basetime = new Array(yvalues.length);
 
-  socket = io.connect('https://' + url);
+  socket = io.connect(url);
   socket.on('bci', passSignal);
 
   button = createButton('Generate Signal');
@@ -44,8 +44,8 @@ function draw() {
   background(0);
   translate(0, height/2); 
   client_time = passed_time
-  signal, client_time, yvalues, my_basetime = processSignal(signal, client_time, yvalues, my_basetime, 'me', color(255))
-  passed_signal,passed_time, other_yvalues, other_basetime= processSignal(passed_signal, passed_time, other_yvalues, other_basetime, 'you', color(255,0,100))
+  signal, client_time, yvalues, my_basetime = processSignal(signal, client_time, yvalues, my_basetime, 'me', color('#FF76E9'))
+  passed_signal,passed_time, other_yvalues, other_basetime= processSignal(passed_signal, passed_time, other_yvalues, other_basetime, 'you', color('#76BEFF'))
 }
 
 function calcWave(sig,t,yvals,bt) {
