@@ -6,6 +6,17 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var bci = require('bcijs');
 
+
+// MongoDB
+const MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb+srv://default-user:JgMmIChJd7IoyOJY@cluster0.bdgxr.mongodb.net/livewire?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true ,  useUnifiedTopology: true});
+let chat_db;
+client.connect(err => {
+    chat_db = client.db("livewire").collection("chat");
+});
+
+// Websocket
 var port = normalizePort(process.env.PORT || '80');
 
 
@@ -15,7 +26,6 @@ io.on('connection', (socket) => {
     console.log('new connection: ' + socket.id);
 
     socket.on('bci',bciSignal)
-    socket.on('real_bci',bciSignal)
 
     function bciSignal(data){
         socket.broadcast.emit('bci', data)
@@ -23,6 +33,14 @@ io.on('connection', (socket) => {
 
     socket.on('chat message', (msg) => {
       io.emit('chat message', msg);
+      console.log('msg: ' + msg)
+
+      chat_db.insertOne(
+          { "msg" : msg,
+            "sender" : "Anonymous",
+            "timestamp" : Date.now(),
+          }
+      )
     });
   });
 

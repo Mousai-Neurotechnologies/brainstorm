@@ -1,4 +1,4 @@
-let url = 'https://mousai.azurewebsites.net/' //'http://localhost'//
+let url = 'https://mousai.azurewebsites.net/'
 
 let ellipse_size = 3;
 let xspacing = ellipse_size; // Distance between each horizontal location
@@ -22,10 +22,10 @@ function setup() {
   createCanvas((3/4)*windowWidth, windowHeight);
   w = width + ellipse_size;
   dx = (TWO_PI / period) * xspacing;
-  yvalues = new Array(floor(w / xspacing));
-  my_basetime = new Array(yvalues.length);
-  other_yvalues = new Array(yvalues.length);
-  other_basetime = new Array(yvalues.length);
+  yvalues = new Array(200).fill(0);
+  my_basetime = new Array(yvalues.length).fill(0);
+  other_yvalues = new Array(yvalues.length).fill(0);
+  other_basetime = new Array(yvalues.length).fill(0);
 
   socket = io.connect(url);
   socket.on('bci', passSignal);
@@ -57,24 +57,31 @@ function calcWave(sig,t,yvals,bt) {
       first_sig = false;
     }
     yvals.push(sig.shift())
-    bt.push(t.shift())
+    bt.push(Date.now()-start_time)//t.shift())
   } else {
     yvals.push(null)
-    bt.push(null)
+    bt.push(Date.now()-start_time) // bt.push(Date.now()-start_time)
   }
   return sig, t, yvals, bt
 }
 
 function renderWave(yvals,bt,usr,c) {
   // A simple way to draw the wave with an ellipse at each location
-  for (let x = 0; x < yvals.length-1; x++) {
+  for (let ind = 0; ind < yvals.length-1; ind++) {
+    // c.setAlpha(100)
     stroke(c);
-    x1 = x * xspacing
-    y1 = yvals[x]
+    strokeWeight(2)
+    in_min = Math.min(...bt);
+    in_max = Math.max(...bt);
+    out_min = 0;
+    out_max = windowWidth;
+    t_inner = bt.map(x => (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
+    
+    y1 = yvals[ind]
     // Normal Plot Scaling
     push()
     scale(1, -1);
-    line(x1, y1, (x+1) * xspacing, yvals[x+1]);
+    line(t_inner[ind], y1, t_inner[ind+1], yvals[ind+1]);
     // Default p5 Scaling
     pop()
     // if ((x % 20) == 0 && usr=='you') {
@@ -100,7 +107,10 @@ function generateSignal() {
   // Generate 1 second of sample data at 512 Hz
   // Contains 8 μV / 8 Hz and 4 μV / 17 Hz
   let samplerate = frameRate() ;
-  signal = bci.generateSignal([25, 50], [2, 4], samplerate, 1);
+  len = 1
+  // start = Date.now()
+  // t = Array.from({length: len*samplerate}, (_, index) => start - 1000);
+  signal = bci.generateSignal([25, 50], [2, 4], samplerate, len);
 
   var data = {
     signal: signal,
